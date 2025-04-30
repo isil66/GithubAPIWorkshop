@@ -7,42 +7,58 @@ jobs:
     name: Development Build
     runs-on: ubuntu-latest
     environment: development
+    env:
+      # Environment variables (not secrets, will be visible in logs)
+      ENV_NAME: "development"
+      SERVER_URL: "https://dev-api.example.com"
+      DEBUG_MODE: "true"
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
       
-      - name: Build and Test with Secrets
+      - name: Build and Test with Environment Variables
         run: |
-          echo "Building for Development environment"
-          echo "Using secret: ${{ secrets.DEV_API_KEY }}"
-          # Never echo actual secrets in production, this is just for demonstration!
+          echo "Building for $ENV_NAME environment"
+          echo "Using server: $SERVER_URL"
+          echo "Debug mode: $DEBUG_MODE"
+          
+          # Still use secrets for sensitive data (will be masked)
+          echo "API Key (masked): ${{ secrets.DEV_API_KEY }}"
   
   staging:
     name: Staging Build
     runs-on: ubuntu-latest
     environment: staging
+    env:
+      ENV_NAME: "staging"
+      SERVER_URL: "https://staging-api.example.com"
+      DEBUG_MODE: "false"
     needs: development
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
       
-      - name: Build and Test with Secrets
+      - name: Build and Test with Environment Variables
         run: |
-          echo "Building for Staging environment"
-          echo "Using secret: ${{ secrets.STAGING_API_KEY }}"
-          # Never echo actual secrets in production, this is just for demonstration!
+          echo "Building for $ENV_NAME environment"
+          echo "Using server: $SERVER_URL"
+          echo "Debug mode: $DEBUG_MODE"
 
   production:
     name: Production Deploy
     runs-on: ubuntu-latest
     environment: production
+    env:
+      ENV_NAME: "production"
+      SERVER_URL: "https://api.example.com"
+      DEBUG_MODE: "false"
     needs: staging
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
       
-      - name: Deploy with Secrets
+      - name: Deploy with Environment Variables
         run: |
-          echo "Deploying to Production"
-          echo "Using secret: ${{ secrets.PROD_API_KEY }}"
-          # Never echo actual secrets in production, this is just for demonstration!
+          echo "Deploying to $ENV_NAME environment"
+          echo "Using server: $SERVER_URL"
+          echo "Debug mode: $DEBUG_MODE"
