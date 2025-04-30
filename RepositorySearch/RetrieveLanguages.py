@@ -25,10 +25,6 @@ def get_repository_with_language():
     """
 
     params = {
-        "q": "Java",
-        "sort": "stars",
-        "order": "desc",
-        "per_page": 10
     }
 
     response = requests.get("https://api.github.com/search/repositories", params=params)
