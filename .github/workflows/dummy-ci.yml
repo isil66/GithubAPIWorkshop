@@ -1,20 +1,48 @@
 name: Simple CI pipeline
 
-on: [workflow_dispatch]          # fire on every push; adjust as needed
+on: [workflow_dispatch]          # fire manually; adjust as needed
 
 jobs:
-  pipeline:
+  development:
+    name: Development Build
     runs-on: ubuntu-latest
-
+    environment: development
     steps:
-      - name: Checkout code             # (optional but common)
+      - name: Checkout code
         uses: actions/checkout@v4
+      
+      - name: Build and Test with Secrets
+        run: |
+          echo "Building for Development environment"
+          echo "Using secret: ${{ secrets.DEV_API_KEY }}"
+          # Never echo actual secrets in production, this is just for demonstration!
+  
+  staging:
+    name: Staging Build
+    runs-on: ubuntu-latest
+    environment: staging
+    needs: development
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+      - name: Build and Test with Secrets
+        run: |
+          echo "Building for Staging environment"
+          echo "Using secret: ${{ secrets.STAGING_API_KEY }}"
+          # Never echo actual secrets in production, this is just for demonstration!
 
-      - name: Build
-        run: echo "Build step"
-
-      - name: Test
-        run: echo "Test step"
-
-      - name: Deploy
-        run: echo "Deploy step"
+  production:
+    name: Production Deploy
+    runs-on: ubuntu-latest
+    environment: production
+    needs: staging
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+      - name: Deploy with Secrets
+        run: |
+          echo "Deploying to Production"
+          echo "Using secret: ${{ secrets.PROD_API_KEY }}"
+          # Never echo actual secrets in production, this is just for demonstration!
