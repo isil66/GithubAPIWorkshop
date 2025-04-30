@@ -1,6 +1,6 @@
 name: Simple CI pipeline
 
-on: [push, workflow_dispatch]          # fire on every push; adjust as needed
+on: [workflow_dispatch]          # fire on every push; adjust as needed
 
 jobs:
   pipeline:
